@@ -10,6 +10,8 @@ const {
     registerUserNameExistInfo
 }=require("../model/ErrorInfo")
 
+const doCrypto=require("../utils/cryp")
+
 /**
  * @description 用户名是否存在
  * @param {string} userName 
@@ -52,7 +54,7 @@ async function register({userName,password,gender}){
     try{
         await createUser({
             userName,
-            password,
+            password:doCrypto(password),
             gender
         })
         return new SuccessModel()
