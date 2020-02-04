@@ -1,12 +1,9 @@
 <%- include('layout/header', { title: '微博 - 注册', isNarrow: true })%>
-<!-- isNarrow对应在header中 -->
 
-<!-- 判断是否登录，如果登陆了就没有必要在注册了 -->
 <h1>注册</h1>
 <% if (locals.isLogin) { %>
     <p><%= locals.userName%> 您已成功登录，请直接访问<a href="/">首页</a></p>
 <% } else { %>
-    <!-- 显示注册的表单 -->
     <form>
         <div class="form-group">
             <input type="text" class="form-control" id="input-username" placeholder="请输入用户名">
@@ -53,11 +50,12 @@
                 userNameTimeoutId = setTimeout(function() {
                     // 判断用户名是否已存在
                     var userName = $inputUserName.val()
-                    ajax.post('/api/user/isExist', {
+                    $.post('/api/user/isExist', {
                         userName
-                    }, function(err, data) {
+                    }, function(err,data) {
+                        console.log(err.errno,data,userName)
                         $spanUserNameInfo.show()
-                        if (err) {
+                        if (err.errno!=0) {
                             $spanUserNameInfo.text('用户名可用')
                             isUserNameExist = false
                         } else {
@@ -108,13 +106,12 @@
                 var gender = parseInt($selectGender.val())
 
                 // 提交数据
-                // 注册的时候只需要这三个信息
-                ajax.post('/api/user/register', {
+                $.post('/api/user/register', {
                     userName,
                     password,
                     gender
                 }, function(err, data) {
-                    if (err) {
+                    if (err.errno=0) {
                         alert(err)
                         return
                     }

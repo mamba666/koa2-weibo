@@ -3,10 +3,11 @@
  * @author edison
  */
 
-const {getUserInfo}=require("../services/user")
+const {getUserInfo,createUser}=require("../services/user")
 const {SuccessModel,ErrorModel}=require("../model/ResModel")
 const {
-    registerUserNameNotExistInfo
+    registerUserNameNotExistInfo,
+    registerUserNameExistInfo
 }=require("../model/ErrorInfo")
 
 /**
@@ -17,16 +18,52 @@ const {
 async function isExist(userName){
     // 调用services
     const userInfo=await getUserInfo(userName)
-    console.log(userInfo)
+    console.log("可以打印1")
     if(userInfo){
+        console.log("可以打印2")
         return new SuccessModel(userInfo)
     }else{
         //不存在
+        console.log("可以打印3")
         return new ErrorModel(registerUserNameNotExistInfo)
     }
     //返回数据格式
 }
 
+/**
+ * 
+ * @param {string} userName 
+ * @param {string} password
+ * @param {number} gender sex 1男2女3保密
+ */
+async function register({userName,password,gender}){
+    //为什么这里还要判断一次呢用户是否存在呢？
+    // 第一个是不要相信前端
+    // 假如前端传过来一个以及存在的username，那么这里可以返回一个友好的界面
+    // 假如这里不写，数据模型有一个unique，但是到了存储层就可能会直接返回一个500
+    // 对用户不友好
+    const userInfo=await getUserInfo(userName)
+    if(userInfo){
+        //用户名以及存在
+        return new ErrorModel(registerUserNameExistInfo)
+    }
+
+    // 注册 services
+    try{
+        await createUser({
+            userName,
+            password,
+            gender
+        })
+        return new SuccessModel()
+    }catch(ex){
+        console.error(ex.message,ex.stack)
+        return new ErrorModel(registerFailInfo)
+    }
+}
+
+
 module.exports={
-    isExist
+    isExist,
+    register
 }
