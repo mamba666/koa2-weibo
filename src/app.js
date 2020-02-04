@@ -9,12 +9,20 @@ var session = require('koa-generic-session')
 var redisStore = require('koa-redis')
 
 const {REDIS_CONFIG}=require("./config/db")
+const {isPrd}=require("./utils/env")
 
 const index = require('./routes/index')
 const users = require('./routes/users')
+const errorViewRouter = require('./routes/view/error')
 
 // error handler
-onerror(app)
+let onerrorConfig={}
+//先判断是不是线上环境，如果是就返回友好页面
+//如果不是就直接返回错误
+if(isPrd){
+  onerrorConfig={redirect:"/error"}
+}
+onerror(app,onerrorConfig)
 
 // middlewares
 app.use(bodyparser({
@@ -46,7 +54,6 @@ app.use(session({
     all:`${REDIS_CONFIG.host}:${REDIS_CONFIG.port}`
   })
 }));
-
 // logger
 // app.use(async (ctx, next) => {
 //   const start = new Date()
@@ -56,8 +63,10 @@ app.use(session({
 // })
 
 // routes
+// 注册路由是由先后顺序的，因为error里面有*，所以可能引起404
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
+app.use(errorViewRouter.routes(), errorViewRouter.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
