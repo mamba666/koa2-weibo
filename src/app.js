@@ -5,6 +5,10 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
+var session = require('koa-generic-session')
+var redisStore = require('koa-redis')
+
+const {REDIS_CONFIG}=require("./config/db")
 
 const index = require('./routes/index')
 const users = require('./routes/users')
@@ -24,13 +28,32 @@ app.use(views(__dirname + '/views', {
   extension: 'ejs'
 }))
 
+//session配置
+//cookie需要加密
+app.keys = ["UIsdf_7878#$"];
+app.use(session({
+  //如果不设置，那么cookie name默认是"koa.sid"
+  key:"weibo.sid",
+  //redis key的前缀，默认是"koa:sess:"
+  prefix:"weibo:sess:",
+  cookie:{
+    path:"/",
+    httpOnly:true,
+    //过期时间，ms
+    maxAge:24*60*60*1000
+  },
+  store: redisStore({
+    all:`${REDIS_CONFIG.host}:${REDIS_CONFIG.port}`
+  })
+}));
+
 // logger
-app.use(async (ctx, next) => {
-  const start = new Date()
-  await next()
-  const ms = new Date() - start
-  console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
-})
+// app.use(async (ctx, next) => {
+//   const start = new Date()
+//   await next()
+//   const ms = new Date() - start
+//   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
+// })
 
 // routes
 app.use(index.routes(), index.allowedMethods())
@@ -42,3 +65,4 @@ app.on('error', (err, ctx) => {
 });
 
 module.exports = app
+
