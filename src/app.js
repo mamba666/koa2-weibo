@@ -13,7 +13,8 @@ const {isPrd}=require("./utils/env")
 
 const index = require('./routes/index')
 const userViewRouter=require('./routes/view/user')
-const errorViewRouter = require('./routes/view/error')
+const errorViewRouter = require('./routes/api/user')
+const userAPIRouter = require('./routes/view/error')
 
 // error handler
 let onerrorConfig={}
@@ -67,6 +68,7 @@ app.use(session({
 // 故404要放在最后
 app.use(index.routes(), index.allowedMethods())
 app.use(userViewRouter.routes(), userViewRouter.allowedMethods())
+app.use(userAPIRouter.routes(), userAPIRouter.allowedMethods())
 app.use(errorViewRouter.routes(), errorViewRouter.allowedMethods())
 
 // error-handling
