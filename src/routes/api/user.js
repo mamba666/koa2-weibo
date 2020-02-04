@@ -4,6 +4,7 @@
  */
 
 const router=require("koa-router")()
+const {isExist}=require("../../controller/user")
 
 router.prefix("/api/user")
 
@@ -13,7 +14,8 @@ router.post("/isExist",async(ctx,next)=>{
     //路由只管派发路径，以及获取前端的参数
     //具体的业务逻辑在controller
     const {userName}=ctx.request.body
-    // ctx.body=await 
+    ctx.body=await isExist(userName)
+    console.log(ctx.body)
 })
 
 router.post("/register",async(ctx,next)=>{
