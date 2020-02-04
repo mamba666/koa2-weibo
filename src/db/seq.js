@@ -28,7 +28,7 @@ if(isPrd){
     min:0,
     // 一个连接池中某个连接如果10秒内没有被使用，就会被释放供别人使用
     idle:10000
-}
+    }
 }
 
 
@@ -37,7 +37,7 @@ const seq=new Sequelize(database,user,password,config)
 module.exports=seq
 
 seq.authenticate().then(()=>{
-    console.log("OK")
+    console.log("OK1")
 }).catch(()=>{
     console.log("err")
 })

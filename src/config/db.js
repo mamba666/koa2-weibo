@@ -14,7 +14,7 @@ let MYSQL_CONFIG={
     user:"root",
     password:"lwjkkkbbb1997",
     port:"3306",
-    databases:"koa2_weibo_db"
+    database:"koa2_weibo_db"
 }
 
 if(isPrd){
