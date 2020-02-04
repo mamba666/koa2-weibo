@@ -12,7 +12,7 @@ const {REDIS_CONFIG}=require("./config/db")
 const {isPrd}=require("./utils/env")
 
 const index = require('./routes/index')
-const users = require('./routes/users')
+const userViewRouter=require('./routes/view/user')
 const errorViewRouter = require('./routes/view/error')
 
 // error handler
@@ -64,8 +64,9 @@ app.use(session({
 
 // routes
 // 注册路由是由先后顺序的，因为error里面有*，所以可能引起404
+// 故404要放在最后
 app.use(index.routes(), index.allowedMethods())
-app.use(users.routes(), users.allowedMethods())
+app.use(userViewRouter.routes(), userViewRouter.allowedMethods())
 app.use(errorViewRouter.routes(), errorViewRouter.allowedMethods())
 
 // error-handling
