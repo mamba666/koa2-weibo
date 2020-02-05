@@ -33,7 +33,6 @@ async function isExist(userName){
 }
 
 /**
- * 
  * @param {string} userName 
  * @param {string} password
  * @param {number} gender sex 1男2女3保密

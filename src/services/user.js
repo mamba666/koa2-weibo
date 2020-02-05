@@ -12,8 +12,6 @@ const {formatUser}=require("./_format")
  * @param {string} userName 
  * @param {string} password 
  */
-
-
 async function getUserInfo(userName,password){
     // 查询条件
     const whereOpt={

@@ -53,6 +53,8 @@
                     $.post('/api/user/isExist', {
                         userName
                     }, function(err,data) {
+                        // 这里的err传进来的是一个successmodel，data传进来的是success
+                        // err.errno获取的是successmodel中定义的err.errno
                         console.log(err.errno,data,userName)
                         $spanUserNameInfo.show()
                         if (err.errno!=0) {
@@ -111,10 +113,13 @@
                     password,
                     gender
                 }, function(err, data) {
-                    if (err.errno=0) {
-                        alert(err)
+                    console.log("re",err.errno,data)
+                    if (err.errno.errno!=0) {
+                        console.log("123")
+                        alert(err.errno.message)
                         return
                     }
+                    console.log("1234")
                     alert('注册成功，请登录')
                     location.href = '/login'
                 })
